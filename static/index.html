@@ -1,0 +1,103 @@
+<!-- static/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Downloader</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Video Downloader</h1>
+    <input id="url" type="text" placeholder="Paste video URL here..." />
+    <br />
+    <button onclick="download()">Download</button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    function download() {
+      const url = document.getElementById("url").value.trim();
+      if (!url) {
+        document.getElementById("status").innerText = "Please enter a URL.";
+        return;
+      }
+
+      document.getElementById("status").innerText = "Downloading...";
+
+      fetch("/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("status").innerText = "✅ Downloaded: " + data.title;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("status").innerText = "❌ Error downloading video.";
+      });
+    }
+  </script>
+</body>
+</html>
