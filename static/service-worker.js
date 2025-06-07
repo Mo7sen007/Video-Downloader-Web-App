@@ -8,5 +8,4 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Offline caching can be added here if needed
 });

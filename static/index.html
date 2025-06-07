@@ -17,6 +17,11 @@
       margin: 0;
     }
 
+    select{
+      padding: 10px;
+      width: 90%;
+    }
+
     h1 {
       color: #333;
       margin-bottom: 20px;
@@ -68,10 +73,21 @@
 <body>
   <div class="container">
     <h1>Video Downloader</h1>
-    <input id="url" type="text" placeholder="Paste video URL here..." />
-    <br />
-    <button onclick="download()">Download</button>
-    <p id="status"></p>
+
+    <form action="/download" method="POST" target="_blank">
+        <input type="text" name="url" placeholder="Paste video URL" required>
+        <label for="format">Choose format:</label>
+        <select name="format">
+          <option value="best">Best Video + Audio</option>
+          <option value="bestaudio">Audio only</option>
+          <option value="bestvideo[height<=720]+bestaudio">Video up to 720p</option>
+          <option value="bestvideo[height<=480p]+bestaudio">Video up to 480p</option>
+          <option value="mp3">MP3 Audio</option>
+          
+        </select>
+        <button type="submit">Download</button>
+</form>
+
   </div>
 
   <script>
