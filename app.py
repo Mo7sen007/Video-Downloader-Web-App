@@ -1,6 +1,8 @@
-from flask import Flask, send_from_directory, request, jsonify
-import yt_dlp
+from flask import Flask, send_file, send_from_directory, request, jsonify
 import os
+from utils import DownloadManager
+
+manager = DownloadManager()
 
 app = Flask(__name__, static_folder="static")
 
@@ -12,30 +14,24 @@ def index():
 def download():
     url =request.form["url"]
     selected_format = request.form["format"]
-    output_dir = os.path.join(os.getcwd(), "download")
-    os.makedirs(output_dir, exist_ok=True)
+    job_id = manager.start_download(url, selected_format)
+    return jsonify({"job_id": job_id})        #mp3 case handle
 
-    ydl_opts = {"outtmpl": os.path.join(output_dir, "%(title)s.%(ext)s"),"format": selected_format}
-    if selected_format == "mp3":
-        ydl_opts.update({
-            "format" : "bestaudio/best",
-            "postprocessors": [{
-                "key" : "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality":"192",
-            }]
-        })
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=True)
-        filename = ydl.prepare_filename(info)
-        #mp3 case handle
-        if selected_format == "mp3":
-            filename = os.path.splitext(filename)[0] + ".mp3"
+    #return send_from_directory(output_dir, basename, as_attachment=True)
 
-        basename = os.path.basename(filename)
+@app.route("/progress/<job_id>")
+def progress(job_id):
+    return jsonify(manager.get_progress(job_id))
 
-
-    return send_from_directory(output_dir, basename, as_attachment=True)
+@app.route("/downloaded/<job_id>")
+def downloaded(job_id):
+    job = manager.get_progress(job_id)
+    if job["status"] != "done" or not job["filename"]:
+        return abort(404, description = "File not ready")
+    directory = os.path.dirname(job["filename"])
+    filename = os.path.basename(job["filename"])
+    filepath = os.path.join(directory,filename)
+    return send_file(filepath, as_attachment=True)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -3,70 +3,131 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Video Downloader</title>
   <style>
+    /* Reset some default styles */
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       margin: 0;
-    }
-
-    select{
-      padding: 10px;
-      width: 90%;
-    }
-
-    h1 {
+      padding: 20px;
       color: #333;
-      margin-bottom: 20px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 500px;
+      background: white;
+      padding: 36px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      max-width: 480px;
       width: 100%;
-      box-sizing: border-box;
       text-align: center;
+      transition: box-shadow 0.3s ease;
+    }
+    .container:hover {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.15);
     }
 
-    input {
-      width: 90%;
-      padding: 10px;
+    h1 {
+      font-weight: 700;
+      font-size: 2.4rem;
+      margin-bottom: 28px;
+      color: #222;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      border: 1.8px solid #ccd6f6;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: #005fcc;
+      outline: none;
+      box-shadow: 0 0 6px #4a90e2cc;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: left;
+      color: #555;
       font-size: 1rem;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
     }
 
     button {
       background-color: #007bff;
       color: white;
-      padding: 10px 20px;
+      padding: 14px 28px;
       border: none;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: 10px;
+      font-size: 1.2rem;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-weight: 600;
+      box-shadow: 0 6px 16px rgba(0,123,255,0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
     }
-
     button:hover {
       background-color: #0056b3;
+      box-shadow: 0 8px 20px rgba(0,86,179,0.5);
+    }
+    button:active {
+      transform: translateY(2px);
     }
 
     #status {
       margin-top: 20px;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      min-height: 24px;
       color: #444;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    progress {
+      margin-top: 12px;
+      width: 100%;
+      height: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: #e1e8ff;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    progress::-webkit-progress-bar {
+      background-color: #e1e8ff;
+      border-radius: 12px;
+    }
+
+    progress::-webkit-progress-value {
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      border-radius: 12px;
+      transition: width 0.4s ease;
+    }
+
+    progress::-moz-progress-bar {
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      border-radius: 12px;
+      transition: width 0.4s ease;
     }
   </style>
 </head>
@@ -74,45 +135,65 @@
   <div class="container">
     <h1>Video Downloader</h1>
 
-    <form action="/download" method="POST" target="_blank">
-        <input type="text" name="url" placeholder="Paste video URL" required>
-        <label for="format">Choose format:</label>
-        <select name="format">
-          <option value="best">Best Video + Audio</option>
-          <option value="bestaudio">Audio only</option>
-          <option value="bestvideo[height<=720]+bestaudio">Video up to 720p</option>
-          <option value="bestvideo[height<=480p]+bestaudio">Video up to 480p</option>
-          <option value="mp3">MP3 Audio</option>
-          
-        </select>
-        <button type="submit">Download</button>
-</form>
+    <input type="text" id="url" placeholder="Paste video URL" required />
+    <label for="format">Choose format:</label>
+    <select id="format" name="format">
+      <option value="best">Best Video + Audio</option>
+      <option value="bestaudio">Audio only</option>
+      <option value="bestvideo[height<=720]+bestaudio">Video up to 720p</option>
+      <option value="bestvideo[height<=480]+bestaudio">Video up to 480p</option>
+      <option value="mp3">MP3 Audio</option>
+    </select>
+    <button type="button" onclick="startDownload()">Download</button>
 
+    <p id="status"></p>
+    <progress id="progressBar" value="0" max="100"></progress>
   </div>
 
   <script>
-    function download() {
+    function startDownload() {
       const url = document.getElementById("url").value.trim();
       if (!url) {
         document.getElementById("status").innerText = "Please enter a URL.";
         return;
       }
+      const format = document.getElementById("format").value;
 
-      document.getElementById("status").innerText = "Downloading...";
+      document.getElementById("status").innerText = "Starting download...";
+      document.getElementById("progressBar").value = 0;
 
       fetch("/download", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url })
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ url, format }),
       })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("status").innerText = "✅ Downloaded: " + data.title;
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("status").innerText = "❌ Error downloading video.";
-      });
+        .then((res) => res.json())
+        .then((data) => pollProgress(data.job_id))
+        .catch((err) => {
+          console.error(err);
+          document.getElementById("status").innerText = "❌ Error downloading video.";
+        });
+    }
+
+    function pollProgress(job_id) {
+      const progressBar = document.getElementById("progressBar");
+      const interval = setInterval(() => {
+        fetch(`/progress/${job_id}`)
+          .then((res) => res.json())
+          .then((data) => {
+            progressBar.value = data.progress || 0;
+            document.getElementById("status").innerText = `Status: ${data.status} | Progress: ${data.progress || 0}%`;
+            if (data.status === "done") {
+              clearInterval(interval);
+              document.getElementById("status").innerText = "Download complete!";
+              window.location.href = `downloaded/${job_id}`;
+            }
+            if (data.status.startsWith("error")) {
+              clearInterval(interval);
+              document.getElementById("status").innerText = "Error :( " + data.status;
+            }
+          });
+      }, 1000);
     }
   </script>
 </body>

@@ -1,0 +1,12 @@
+w
+venv/
+
+
+.DS_Store
+
+__pycache__/
+*.py[cod]
+*.so
+
+
+android version/
