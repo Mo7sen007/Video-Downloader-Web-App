@@ -15,9 +15,8 @@ def download():
     url =request.form["url"]
     selected_format = request.form["format"]
     job_id = manager.start_download(url, selected_format)
-    return jsonify({"job_id": job_id})        #mp3 case handle
+    return jsonify({"job_id": job_id})
 
-    #return send_from_directory(output_dir, basename, as_attachment=True)
 
 @app.route("/progress/<job_id>")
 def progress(job_id):

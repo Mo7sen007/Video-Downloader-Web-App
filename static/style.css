@@ -1,0 +1,122 @@
+* {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      background: white;
+      padding: 36px 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      transition: box-shadow 0.3s ease;
+    }
+    .container:hover {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.4rem;
+      margin-bottom: 28px;
+      color: #222;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      border: 1.8px solid #ccd6f6;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: #005fcc;
+      outline: none;
+      box-shadow: 0 0 6px #4a90e2cc;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: left;
+      color: #555;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 6px 16px rgba(0,123,255,0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+      box-shadow: 0 8px 20px rgba(0,86,179,0.5);
+    }
+    button:active {
+      transform: translateY(2px);
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 1rem;
+      min-height: 24px;
+      color: #444;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    progress {
+      margin-top: 12px;
+      width: 100%;
+      height: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: #e1e8ff;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    progress::-webkit-progress-bar {
+      background-color: #e1e8ff;
+      border-radius: 12px;
+    }
+
+    progress::-webkit-progress-value {
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      border-radius: 12px;
+      transition: width 0.4s ease;
+    }
+
+    progress::-moz-progress-bar {
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      border-radius: 12px;
+      transition: width 0.4s ease;
+    }
